@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI工作流设计文档 - 张梓宇</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap");
+  :root { --accent: #6c63ff; --text: #1a1a2e; --text2: #555570; --bg: #ffffff; --card: #f4f5f7; --border: rgba(0,0,0,0.08); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: "Noto Sans SC","Inter",sans-serif; background:var(--bg); color:var(--text); line-height:1.8; }
+  .nav { position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); background:rgba(255,255,255,0.92); border-bottom:1px solid var(--border); padding:12px 24px; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:14px; font-weight:500; }
+  .nav a:hover { text-decoration:underline; }
+  .content { max-width:900px; margin:0 auto; padding:40px 24px 80px; }
+  h1 { font-size:32px; font-weight:800; margin-bottom:8px; }
+  h2 { font-size:24px; font-weight:700; margin:40px 0 16px; padding-bottom:8px; border-bottom:2px solid var(--accent); display:inline-block; }
+  h3 { font-size:18px; font-weight:600; margin:28px 0 12px; }
+  h4 { font-size:15px; font-weight:600; margin:20px 0 8px; }
+  p { margin:10px 0; color:var(--text2); }
+  strong { color:var(--text); }
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14px; }
+  th { background:var(--card); font-weight:600; text-align:left; padding:10px 14px; border:1px solid var(--border); }
+  td { padding:10px 14px; border:1px solid var(--border); }
+  tr:hover td { background:rgba(108,99,255,0.03); }
+  pre { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:16px; overflow-x:auto; font-size:13px; line-height:1.6; margin:16px 0; }
+  code { font-family:"Fira Code","Consolas",monospace; font-size:13px; }
+  :not(pre)>code { background:var(--card); padding:2px 6px; border-radius:4px; font-size:13px; }
+  blockquote { border-left:3px solid var(--accent); padding:12px 20px; margin:16px 0; background:rgba(108,99,255,0.03); border-radius:0 8px 8px 0; }
+  blockquote p { margin:4px 0; }
+  hr { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  ul,ol { padding-left:24px; margin:10px 0; }
+  li { margin:4px 0; color:var(--text2); }
+</style>
+</head>
+<body>
+<div class="nav"><a href="../index.html">← 返回简历</a></div>
+<div class="content">
+<h1 id="ai">AI工作流设计文档</h1>
+<blockquote>
+<p><strong>创作者</strong>：张宇 | <strong>日期</strong>：2026-06-01 | <strong>适用场景</strong>：团购品牌营销运营</p>
+</blockquote>
+<hr />
+<h2 id="_1">一、工作流总览</h2>
+<p>本工作流体系围绕团购品牌营销的核心环节，设计了<strong>3条自动化流水线</strong>，覆盖从情报采集、内容生产到竞品监控的全链路。</p>
+<pre><code>┌─────────────────────────────────────────────────┐
+│              AI 工作流架构总览                     │
+├─────────────┬──────────────┬────────────────────┤
+│  情报层      │  生产层       │  监控层            │
+│             │              │                    │
+│ 每日行业情报 │ 周度内容排期  │ 竞品动态周报       │
+│ (每天9:00)  │ (每周日20:00) │ (每周一9:00)      │
+│             │              │                    │
+│ WebSearch   │ AI选题生成    │ 多平台数据抓取     │
+│ → 分类整理   │ → 4平台适配   │ → 竞品分析         │
+│ → 摘要提炼   │ → 日历排期    │ → 趋势洞察         │
+└─────────────┴──────────────┴────────────────────┘
+         ↓              ↓              ↓
+    ┌──────────────────────────────────────┐
+    │          执行层（WorkBuddy）          │
+    │  图片生成 / 视频制作 / PPT / 文案     │
+    └──────────────────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="_2">二、工作流详情</h2>
+<h3 id="1">工作流1：团购行业每日情报（自动化）</h3>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>触发频率</strong></td>
+<td>每天早上9:00</td>
+</tr>
+<tr>
+<td><strong>执行工具</strong></td>
+<td>WorkBuddy Agent（WebSearch + AI分析）</td>
+</tr>
+<tr>
+<td><strong>数据源</strong></td>
+<td>百度新闻、行业媒体、社交平台、官方公告</td>
+</tr>
+<tr>
+<td><strong>输出</strong></td>
+<td>3-5条精选行业动态 + 1条趋势洞察</td>
+</tr>
+</tbody>
+</table>
+<p><strong>工作流程：</strong></p>
+<pre><code>定时触发(9:00AM)
+  → WebSearch搜索&quot;团购&quot;关键词组
+  → WebFetch抓取重点文章详情
+  → AI分类整理（平台动态/市场趋势/营销案例/技术工具/政策法规）
+  → 提炼3-5条核心动态
+  → 生成今日洞察
+  → 输出结构化日报
+</code></pre>
+<p><strong>Prompt模板：</strong></p>
+<pre><code>搜索今日中国团购行业最新动态，包括：
+1. 美团、抖音团购、小红书团购等平台的最新新闻和政策变化
+2. 本地生活服务领域的重要事件
+3. 团购营销相关的新工具、新方法、新案例
+
+输出格式：
+📰 团购行业每日情报 | {日期}
+1. 【平台动态】xxx
+2. 【市场趋势】xxx
+3. 【营销案例】xxx
+4. 【技术工具】xxx
+5. 【政策法规】xxx
+💡 今日洞察：xxx
+</code></pre>
+<p><strong>效率对比：</strong>
+| 指标 | 人工执行 | AI自动化 |
+|------|---------|---------|
+| 耗时 | 60-90分钟/天 | 3-5分钟/天 |
+| 覆盖面 | 3-5个信息源 | 20+个信息源 |
+| 输出质量 | 依赖个人经验 | 结构化、可追溯 |
+| <strong>效率提升</strong> | - | <strong>95%+</strong> |</p>
+<hr />
+<h3 id="2">工作流2：周度内容排期生成（自动化）</h3>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>触发频率</strong></td>
+<td>每周日晚上20:00</td>
+</tr>
+<tr>
+<td><strong>执行工具</strong></td>
+<td>WorkBuddy Agent（WebSearch + AI规划）</td>
+</tr>
+<tr>
+<td><strong>数据源</strong></td>
+<td>行业热点、平台趋势、用户行为数据</td>
+</tr>
+<tr>
+<td><strong>输出</strong></td>
+<td>4平台×3条选题 = 12条内容 + 内容日历</td>
+</tr>
+</tbody>
+</table>
+<p><strong>工作流程：</strong></p>
+<pre><code>定时触发(周日20:00)
+  → WebSearch搜索本周团购热点
+  → AI分析热点与平台匹配度
+  → 为4个平台各生成3条选题
+  → 每条选题含：标题/方向/时间/效果预估
+  → 生成本周内容日历总览
+  → 输出结构化排期表
+</code></pre>
+<p><strong>多平台适配策略：</strong>
+| 平台 | 内容形式 | 时长/篇幅 | 发布高峰 | 调性 |
+|------|---------|----------|---------|------|
+| 抖音 | 短视频/直播 | 15-60秒 | 12:00/18:00/21:00 | 活泼、有节奏感 |
+| 小红书 | 图文笔记 | 300-800字 | 12:00/20:00 | 精致、有种草感 |
+| 美团 | 店铺营销 | 活动描述 | 10:00/17:00 | 实惠、直击痛点 |
+| 微信 | 朋友圈/社群 | 100-300字 | 08:00/12:00/20:00 | 真实、有温度 |</p>
+<p><strong>效率对比：</strong>
+| 指标 | 人工执行 | AI自动化 |
+|------|---------|---------|
+| 耗时 | 3-4小时/周 | 10-15分钟/周 |
+| 选题数量 | 6-8条 | 12条 |
+| 平台覆盖 | 2-3个平台 | 4个平台全覆盖 |
+| <strong>效率提升</strong> | - | <strong>90%+</strong> |</p>
+<hr />
+<h3 id="3">工作流3：竞品动态周报（自动化）</h3>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>触发频率</strong></td>
+<td>每周一早上9:00</td>
+</tr>
+<tr>
+<td><strong>执行工具</strong></td>
+<td>WorkBuddy Agent（WebSearch + WebFetch + AI分析）</td>
+</tr>
+<tr>
+<td><strong>数据源</strong></td>
+<td>美团/抖音/小红书/淘宝闪购官方动态、媒体报道</td>
+</tr>
+<tr>
+<td><strong>输出</strong></td>
+<td>平台对比表 + 营销案例 + 趋势洞察 + 行动建议</td>
+</tr>
+</tbody>
+</table>
+<p><strong>工作流程：</strong></p>
+<pre><code>定时触发(周一9:00)
+  → WebSearch搜索各平台过去7天动态
+  → WebFetch抓取重点报道详情
+  → AI对比分析各平台变化
+  → 识别竞品营销案例
+  → 提炼趋势洞察
+  → 生成行动建议
+  → 输出结构化周报
+</code></pre>
+<p><strong>监控维度：</strong>
+| 监控对象 | 关注点 | 数据来源 |
+|---------|--------|---------|
+| 美团 | 新功能、商家政策、市场份额变化 | 官方公告、财报、媒体报道 |
+| 抖音团购 | GMV数据、达人合作、内容趋势 | 官方数据、行业报告 |
+| 小红书 | 种草内容、KOL合作、用户反馈 | 平台搜索、用户讨论 |
+| 淘宝闪购 | 即时零售布局、商家增速 | 阿里财报、媒体报道 |</p>
+<p><strong>效率对比：</strong>
+| 指标 | 人工执行 | AI自动化 |
+|------|---------|---------|
+| 耗时 | 4-6小时/周 | 15-20分钟/周 |
+| 监控平台 | 2-3个 | 4+个 |
+| 分析深度 | 表层信息 | 多维度对比 |
+| <strong>效率提升</strong> | - | <strong>95%+</strong> |</p>
+<hr />
+<h2 id="_3">三、工具链组合</h2>
+<h3 id="31">3.1 核心工具矩阵</h3>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>工具</th>
+<th>用途</th>
+<th>成本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>信息采集</strong></td>
+<td>WorkBuddy WebSearch</td>
+<td>全网搜索行业动态</td>
+<td>免费</td>
+</tr>
+<tr>
+<td><strong>内容深读</strong></td>
+<td>WorkBuddy WebFetch</td>
+<td>抓取文章全文并分析</td>
+<td>免费</td>
+</tr>
+<tr>
+<td><strong>AI分析</strong></td>
+<td>WorkBuddy Agent</td>
+<td>智能分类、提炼、生成</td>
+<td>免费</td>
+</tr>
+<tr>
+<td><strong>图片生成</strong></td>
+<td>toapis-image-gen (gpt-image-2)</td>
+<td>团购海报、产品主图</td>
+<td>按量付费</td>
+</tr>
+<tr>
+<td><strong>视频制作</strong></td>
+<td>Gemini Flow (omni)</td>
+<td>AI配音+文生视频</td>
+<td>会员制</td>
+</tr>
+<tr>
+<td><strong>办公协作</strong></td>
+<td>WorkBuddy + Gamma</td>
+<td>PPT制作、报告生成</td>
+<td>免费</td>
+</tr>
+<tr>
+<td><strong>自动化调度</strong></td>
+<td>WorkBuddy Automation</td>
+<td>定时任务、工作流编排</td>
+<td>免费</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32">3.2 工具协作流程图</h3>
+<pre><code>数据源                  处理层                    产出层
+────────              ────────                  ────────
+百度新闻  ─┐
+行业媒体  ─┤  WebSearch   ┌──────────┐
+社交平台  ─┼──────────→   │  AI分析   │──→ 行业日报
+官方公告  ─┤              │ (Agent)  │    竞品周报
+用户反馈  ─┘              └────┬─────┘    内容排期
+                               │
+                    ┌──────────┼──────────┐
+                    ↓          ↓          ↓
+              ┌──────────┐┌──────────┐┌──────────┐
+              │ 图片生成  ││ 视频制作  ││ PPT制作   │
+              │ gpt-img-2││Gemini    ││Gamma/Claude│
+              └──────────┘└──────────┘└──────────┘
+                    ↓          ↓          ↓
+              海报/主图    短视频     方案/报告
+</code></pre>
+<hr />
+<h2 id="prompt">四、Prompt工程规范</h2>
+<h3 id="41-prompt">4.1 Prompt设计原则</h3>
+<table>
+<thead>
+<tr>
+<th>原则</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>角色设定</strong></td>
+<td>明确AI扮演的角色</td>
+<td>"你是一位资深团购营销分析师"</td>
+</tr>
+<tr>
+<td><strong>任务明确</strong></td>
+<td>清晰描述输出要求</td>
+<td>"输出3-5条行业动态，每条一句话概括"</td>
+</tr>
+<tr>
+<td><strong>格式约束</strong></td>
+<td>指定输出结构</td>
+<td>"使用Markdown表格，包含平台/事件/影响三列"</td>
+</tr>
+<tr>
+<td><strong>质量标准</strong></td>
+<td>定义什么是好结果</td>
+<td>"信息必须附带来源URL，数据需标注时间"</td>
+</tr>
+<tr>
+<td><strong>迭代优化</strong></td>
+<td>根据结果调整Prompt</td>
+<td>增加约束条件、调整分类维度</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-prompt">4.2 常用Prompt模板库</h3>
+<p><strong>模板1：行业新闻摘要</strong></p>
+<pre><code>角色：团购行业分析师
+任务：搜索并整理今日行业动态
+约束：
+- 至少覆盖3个平台（美团/抖音/小红书）
+- 每条动态附带信息来源
+- 区分&quot;事实&quot;和&quot;观点&quot;
+输出：结构化日报，含趋势洞察
+</code></pre>
+<p><strong>模板2：竞品分析报告</strong></p>
+<pre><code>角色：竞品分析专家
+任务：分析{平台名}本周重大变化
+约束：
+- 与上周对比，标注变化点
+- 分析对中小商家的影响
+- 给出可落地的应对建议
+输出：对比表格+洞察+建议
+</code></pre>
+<p><strong>模板3：内容选题生成</strong></p>
+<pre><code>角色：内容策划总监
+任务：为{平台名}生成本周内容选题
+约束：
+- 选题必须与当前热点关联
+- 每条选题包含标题+方向+发布时间
+- 调性符合平台用户偏好
+输出：选题表格，含内容日历
+</code></pre>
+<hr />
+<h2 id="_4">五、效率数据汇总</h2>
+<h3 id="51">5.1 整体效率提升</h3>
+<table>
+<thead>
+<tr>
+<th>工作环节</th>
+<th>传统方式耗时</th>
+<th>AI工作流耗时</th>
+<th>效率提升</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>每日行业情报</td>
+<td>60-90分钟/天</td>
+<td>3-5分钟/天</td>
+<td><strong>95%+</strong></td>
+</tr>
+<tr>
+<td>周度内容排期</td>
+<td>3-4小时/周</td>
+<td>10-15分钟/周</td>
+<td><strong>90%+</strong></td>
+</tr>
+<tr>
+<td>竞品动态监控</td>
+<td>4-6小时/周</td>
+<td>15-20分钟/周</td>
+<td><strong>95%+</strong></td>
+</tr>
+<tr>
+<td><strong>周总计</strong></td>
+<td><strong>~12小时/周</strong></td>
+<td><strong>~45分钟/周</strong></td>
+<td><strong>94%+</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="52">5.2 质量提升</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>传统方式</th>
+<th>AI工作流</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>信息覆盖面</td>
+<td>3-5个信息源</td>
+<td>20+个信息源</td>
+</tr>
+<tr>
+<td>分析深度</td>
+<td>表层信息汇总</td>
+<td>多维度对比分析</td>
+</tr>
+<tr>
+<td>输出一致性</td>
+<td>依赖个人状态</td>
+<td>标准化输出</td>
+</tr>
+<tr>
+<td>可追溯性</td>
+<td>难以追溯</td>
+<td>每条信息附带来源</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53">5.3 成本分析</h3>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>月成本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WorkBuddy（搜索+分析+自动化）</td>
+<td>免费</td>
+</tr>
+<tr>
+<td>toapis-image-gen（图片生成）</td>
+<td>按量付费</td>
+</tr>
+<tr>
+<td>Gemini会员（视频制作）</td>
+<td>会员制</td>
+</tr>
+<tr>
+<td><strong>总计</strong></td>
+<td><strong>远低于传统外包成本</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_5">六、扩展方向</h2>
+<h3 id="61-1-2">6.1 近期可优化（1-2周）</h3>
+<ul>
+<li>[ ] 增加"AI图片生成自动化"工作流（根据选题自动生成海报）</li>
+<li>[ ] 增加"竞品价格监控"工作流（定期抓取竞品团购价格）</li>
+<li>[ ] 优化Prompt模板，提升输出质量</li>
+</ul>
+<h3 id="62-1-2">6.2 中期可扩展（1-2月）</h3>
+<ul>
+<li>[ ] 搭建"智能体矩阵"：不同智能体负责不同平台</li>
+<li>[ ] 集成飞书/企业微信，实现自动推送</li>
+<li>[ ] 建立行业数据库，支持历史数据对比</li>
+</ul>
+<h3 id="63-3-6">6.3 长期愿景（3-6月）</h3>
+<ul>
+<li>[ ] 多智能体协作：情报员+分析师+内容创作者协同工作</li>
+<li>[ ] 自动化内容生产流水线：选题→文案→图片→视频→发布</li>
+<li>[ ] 数据驱动决策：基于历史数据预测趋势</li>
+</ul>
+<hr />
+<h2 id="_6">七、总结</h2>
+<p>本工作流体系的核心价值：</p>
+<ol>
+<li><strong>降本增效</strong>：将每周12小时的重复性工作压缩到45分钟，效率提升94%+</li>
+<li><strong>标准化输出</strong>：确保情报采集、内容排期、竞品监控的质量一致性</li>
+<li><strong>可扩展性强</strong>：基于WorkBuddy Agent的自动化框架，随时可以增加新的工作流</li>
+<li><strong>实战验证</strong>：3条工作流已在WorkBuddy上实际搭建并运行</li>
+</ol>
+<blockquote>
+<p>用AI做重复的事，把时间留给创造性的工作。</p>
+</blockquote>
+</div>
+</body>
+</html>
