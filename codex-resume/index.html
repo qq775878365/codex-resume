@@ -1,0 +1,612 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>张梓宇 - AI自动化工作流工程师 | Codex CLI 创建的网页简历</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+  
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-card: #12121a;
+    --bg-card-hover: #1a1a2e;
+    --accent: #6c63ff;
+    --accent-glow: rgba(108, 99, 255, 0.3);
+    --accent2: #00d4aa;
+    --accent3: #ff6b6b;
+    --text-primary: #e8e8f0;
+    --text-secondary: #8888aa;
+    --text-dim: #555577;
+    --border: rgba(255,255,255,0.06);
+    --gradient-1: linear-gradient(135deg, #6c63ff, #00d4aa);
+    --gradient-2: linear-gradient(135deg, #ff6b6b, #ffa502);
+    --gradient-3: linear-gradient(135deg, #00d4aa, #0984e3);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans SC', 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* === ANIMATED BACKGROUND === */
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(108,99,255,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(0,212,170,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 50% 80%, rgba(255,107,107,0.04) 0%, transparent 50%);
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    background: rgba(10,10,15,0.8);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  nav .inner {
+    max-width: 1100px; margin: 0 auto; padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  nav .logo { font-weight: 700; font-size: 18px; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  nav .links { display: flex; gap: 28px; }
+  nav .links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  nav .links a:hover { color: var(--accent); }
+  .badge { display: inline-block; background: var(--gradient-1); color: #fff; font-size: 11px; padding: 2px 10px; border-radius: 20px; font-weight: 600; margin-left: 6px; }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 1; padding: 120px 24px 80px;
+  }
+  .hero-content { text-align: center; max-width: 700px; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.2);
+    padding: 6px 18px; border-radius: 30px; font-size: 13px; color: var(--accent);
+    margin-bottom: 24px; font-weight: 500;
+  }
+  .hero-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .hero h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 800; line-height: 1.15; margin-bottom: 16px; }
+  .hero h1 .gradient { background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .subtitle { font-size: clamp(16px, 2.5vw, 20px); color: var(--text-secondary); margin-bottom: 36px; font-weight: 300; }
+  .hero-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    padding: 12px 28px; border-radius: 12px; font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: all 0.3s; cursor: pointer; border: none;
+  }
+  .btn-primary { background: var(--gradient-1); color: #fff; box-shadow: 0 4px 20px var(--accent-glow); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
+  .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-stats { display: flex; gap: 40px; justify-content: center; margin-top: 48px; }
+  .stat { text-align: center; }
+  .stat .num { font-size: 28px; font-weight: 800; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat .label { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  /* === SECTIONS === */
+  section { position: relative; z-index: 1; padding: 80px 24px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 56px; }
+  .section-header h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+  .section-header p { color: var(--text-secondary); font-size: 15px; }
+  .section-tag {
+    display: inline-block; font-size: 12px; font-weight: 600; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
+  }
+
+  /* === SKILLS === */
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .skill-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px; transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .skill-card:hover { border-color: rgba(108,99,255,0.3); transform: translateY(-3px); background: var(--bg-card-hover); }
+  .skill-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--gradient-1); opacity: 0; transition: opacity 0.3s;
+  }
+  .skill-card:hover::before { opacity: 1; }
+  .skill-card .icon { font-size: 28px; margin-bottom: 14px; }
+  .skill-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .skill-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .skill-tag {
+    background: rgba(108,99,255,0.08); color: var(--accent); padding: 3px 10px;
+    border-radius: 6px; font-size: 11px; font-weight: 500;
+  }
+
+  /* === PROJECTS === */
+  .project-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 32px; margin-bottom: 20px; transition: all 0.3s; position: relative;
+  }
+  .project-card:hover { border-color: rgba(108,99,255,0.3); transform: translateY(-2px); }
+  .project-card .top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .project-card h3 { font-size: 18px; font-weight: 700; }
+  .project-card .tag-line { font-size: 12px; color: var(--accent2); font-weight: 500; }
+  .project-card .desc { color: var(--text-secondary); font-size: 14px; margin-bottom: 16px; }
+  .project-card .features { list-style: none; }
+  .project-card .features li { font-size: 13px; color: var(--text-secondary); padding: 4px 0; padding-left: 20px; position: relative; }
+  .project-card .features li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+  .project-card .tech-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+  .project-card .tech-tag { background: rgba(0,212,170,0.08); color: var(--accent2); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 500; }
+  .project-card .link-btn {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 500; transition: gap 0.2s;
+  }
+  .project-card .link-btn:hover { gap: 10px; }
+
+  /* === TOOLBOX === */
+  .toolbox { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .tool-item {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; text-align: center; transition: all 0.3s;
+  }
+  .tool-item:hover { border-color: rgba(108,99,255,0.3); transform: translateY(-2px); }
+  .tool-item .emoji { font-size: 24px; margin-bottom: 8px; }
+  .tool-item h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .tool-item p { font-size: 11px; color: var(--text-dim); }
+
+  /* === EDUCATION === */
+  .timeline { position: relative; padding-left: 30px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent), var(--accent2)); border-radius: 2px; }
+  .timeline-item { position: relative; margin-bottom: 36px; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -26px; top: 6px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--bg-primary);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .timeline-item .date { font-size: 12px; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+  .timeline-item h3 { font-size: 17px; font-weight: 700; }
+  .timeline-item .school { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+  .timeline-item .detail { font-size: 13px; color: var(--text-dim); }
+
+  /* === AWARDS === */
+  .awards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .award-item {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; align-items: center; gap: 14px; transition: all 0.3s;
+  }
+  .award-item:hover { border-color: rgba(255,165,2,0.3); }
+  .award-item .medal { font-size: 28px; }
+  .award-item .info h4 { font-size: 14px; font-weight: 600; }
+  .award-item .info p { font-size: 12px; color: var(--text-dim); }
+
+  /* === CONTACT === */
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .contact-item {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; text-align: center; transition: all 0.3s;
+  }
+  .contact-item:hover { border-color: rgba(108,99,255,0.3); }
+  .contact-item .icon { font-size: 28px; margin-bottom: 10px; }
+  .contact-item h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .contact-item p { font-size: 13px; color: var(--text-secondary); }
+
+  /* === FOOTER === */
+  footer {
+    text-align: center; padding: 40px 24px; font-size: 12px; color: var(--text-dim);
+    border-top: 1px solid var(--border); position: relative; z-index: 1;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* === SCROLL ANIMATIONS === */
+  .fade-up { opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    nav .links { gap: 16px; }
+    nav .links a { font-size: 12px; }
+    .hero-stats { gap: 24px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .toolbox { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 28px; }
+    .hero-stats { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <div class="logo">张梓宇 <span class="badge">AI</span></div>
+    <div class="links">
+      <a href="#skills">技能</a>
+      <a href="#projects">项目</a>
+      <a href="#tools">工具箱</a>
+      <a href="#education">教育</a>
+      <a href="#contact">联系</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag"><span class="dot"></span>AI 自动化工作流工程师 · 深圳</div>
+    <h1>用 <span class="gradient">AI</span> 把复杂流程<br>变成 <span class="gradient">自动化系统</span></h1>
+    <p class="subtitle">独立完成 4 个可交付 AI 应用项目，涵盖量化交易、内容采集、在线教育、产品原型<br>中共党员 · 退役军人 · 广东东软学院 本科</p>
+    <div class="hero-buttons">
+      <a href="#projects" class="btn btn-primary">查看项目</a>
+      <a href="#contact" class="btn btn-outline">联系我</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="num">4</div><div class="label">独立 AI 项目</div></div>
+      <div class="stat"><div class="num">50+</div><div class="label">AI 工具熟练</div></div>
+      <div class="stat"><div class="num">GPA 3.53</div><div class="label">本科绩点</div></div>
+      <div class="stat"><div class="num">6+</div><div class="label">数据源集成</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">Professional Skills</div>
+      <h2>专业技能</h2>
+      <p>从 AI 落地到全栈开发，构建端到端的自动化能力</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card fade-up">
+        <div class="icon">🤖</div>
+        <h3>AI 自动化落地</h3>
+        <p>独立完成 4 个可交付的 AI 应用项目，涵盖量化交易、内容采集、在线教育、产品原型</p>
+        <div class="skill-tags">
+          <span class="skill-tag">AI Agent</span>
+          <span class="skill-tag">自动化工作流</span>
+          <span class="skill-tag">MVP 快速验证</span>
+        </div>
+      </div>
+      <div class="skill-card fade-up">
+        <div class="icon">🔗</div>
+        <h3>AI 工具链</h3>
+        <p>熟练使用主流 AI 开发工具，具备 API 接入、Skills 开发与调优、工作流编排能力</p>
+        <div class="skill-tags">
+          <span class="skill-tag">WorkBuddy</span>
+          <span class="skill-tag">OpenClaw</span>
+          <span class="skill-tag">Claude Code</span>
+          <span class="skill-tag">Codex</span>
+          <span class="skill-tag">Trae</span>
+        </div>
+      </div>
+      <div class="skill-card fade-up">
+        <div class="icon">💻</div>
+        <h3>开发语言</h3>
+        <p>Go（独立项目）、Python（数据分析 + 自动化脚本）及其他 AI 语言</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Go</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">SQL</span>
+        </div>
+      </div>
+      <div class="skill-card fade-up">
+        <div class="icon">🔌</div>
+        <h3>集成能力</h3>
+        <p>飞书、企业微信、QQ 长连接联调，打通多平台消息通道</p>
+        <div class="skill-tags">
+          <span class="skill-tag">飞书</span>
+          <span class="skill-tag">企业微信</span>
+          <span class="skill-tag">QQ Bot</span>
+        </div>
+      </div>
+      <div class="skill-card fade-up">
+        <div class="icon">🖥️</div>
+        <h3>系统运维</h3>
+        <p>Windows/Linux 环境部署维护，MySQL 基础操作，AI 模型安装与运维</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Linux</span>
+          <span class="skill-tag">Windows</span>
+          <span class="skill-tag">MySQL</span>
+        </div>
+      </div>
+      <div class="skill-card fade-up">
+        <div class="icon">📜</div>
+        <h3>专业证书</h3>
+        <p>CISAW 信息安全认证 · HCIP 云计算认证</p>
+        <div class="skill-tags">
+          <span class="skill-tag">CISAW</span>
+          <span class="skill-tag">HCIP 云计算</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="background: rgba(255,255,255,0.01);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">Projects</div>
+      <h2>项目经历</h2>
+      <p>每个项目都是从想法到交付的完整闭环</p>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="top">
+        <div>
+          <h3>📈 可转债日内量化交易系统</h3>
+          <span class="tag-line">独立项目 · AI Agent 驱动</span>
+        </div>
+      </div>
+      <p class="desc">将机构级别的日内交易策略自动化，输出给个人投资者使用。部署为 AI Agent，支持"说一句话就跑策略"，零手动干预。</p>
+      <ul class="features">
+        <li>实时采集 5 分钟 K 线行情，自动计算 MACD/KDJ/RSI/CCI 等多指标信号</li>
+        <li>综合评分系统（-100~+100）自动判断买入/卖出时机</li>
+        <li>对接 QMT 量化平台自动执行交易</li>
+        <li>本质：把原来需要专业量化团队完成的工作，压缩成可独立运行的自动化系统</li>
+      </ul>
+      <div class="tech-stack">
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">QMT</span>
+        <span class="tech-tag">AI Agent</span>
+        <span class="tech-tag">技术指标计算</span>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="top">
+        <div>
+          <h3>📡 自动化情报采集系统</h3>
+          <span class="tag-line">独立项目 · 一个人干了一个团队的活</span>
+        </div>
+      </div>
+      <p class="desc">一个人完成了一个团队每天 2 小时的信息搜索工作。等于给团队装了一个永不停机的"市场信息雷达"。</p>
+      <ul class="features">
+        <li>覆盖 6 大数据源（RSS / Twitter KOL / Reddit / GitHub 等），50 秒完成全量采集</li>
+        <li>自动去重 + 质量评分，输出结构化摘要</li>
+        <li>每天定时推送到飞书群</li>
+      </ul>
+      <div class="tech-stack">
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">RSS</span>
+        <span class="tech-tag">Twitter API</span>
+        <span class="tech-tag">飞书集成</span>
+        <span class="tech-tag">AI 摘要</span>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="top">
+        <div>
+          <h3>🧠 智囊团技能 (Brain-Trust)</h3>
+          <span class="tag-line">自建思维系统</span>
+        </div>
+      </div>
+      <p class="desc">自建"智囊团"思维系统，调用 20+ 位顶尖人物的思维框架辅助分析和决策。</p>
+      <div class="tech-stack">
+        <span class="tech-tag">AI Agent</span>
+        <span class="tech-tag">Prompt Engineering</span>
+        <span class="tech-tag">思维框架</span>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="top">
+        <div>
+          <h3>📝 答题系统</h3>
+          <span class="tag-line">独立项目 · 成本从 2 小时降至 0</span>
+        </div>
+      </div>
+      <p class="desc">5000+ 题库随机生成，每套卷子内容不同，无法作弊。自动批改即时出分，相当于一个永不出错、不知疲倦的在线考官。</p>
+      <ul class="features">
+        <li>5000+ 题库随机生成，每套卷子内容不同</li>
+        <li>自动批改即时出分，5 秒自动跳转</li>
+        <li>答题进度实时显示</li>
+      </ul>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="top">
+        <div>
+          <h3>⚡ SBTI 积极版</h3>
+          <span class="tag-line">独立项目 · 1 小时上线 · <a href="https://github.com/qq775878365/sbti-sunny" target="_blank" style="color:var(--accent);">GitHub ↗</a></span>
+        </div>
+      </div>
+      <p class="desc">1 小时完成从想法到线上可用产品。零技术背景用户可直接使用，验证了快速验证想法的 MVP 能力。</p>
+      <ul class="features">
+        <li>从想法到落地只用了 1 小时</li>
+        <li>零技术背景用户可直接使用</li>
+        <li>验证了快速验证想法的 MVP 能力</li>
+      </ul>
+      <div class="tech-stack">
+        <span class="tech-tag">MVP</span>
+        <span class="tech-tag">快速迭代</span>
+        <span class="tech-tag">在线产品</span>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="top">
+        <div>
+          <h3>🛡️ 基于 Go 的 Web 安全扫描器</h3>
+          <span class="tag-line">毕业设计 · 2024/09 - 2025/03</span>
+        </div>
+      </div>
+      <p class="desc">用 AI 编程工具独立完成安全审计工具开发。全流程由 Cursor AI 辅助完成，验证了 AI 编程工作流。</p>
+      <ul class="features">
+        <li>覆盖 SQL 注入、XSS 等主流 Web 漏洞检测</li>
+        <li>自动输出含风险等级的审计报告</li>
+        <li>使用 Cursor AI 开发，验证 AI 编程工作流</li>
+      </ul>
+      <div class="tech-stack">
+        <span class="tech-tag">Go</span>
+        <span class="tech-tag">Cursor AI</span>
+        <span class="tech-tag">安全审计</span>
+        <span class="tech-tag">SQL 注入检测</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI TOOLBOX -->
+<section id="tools">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">AI Toolbox</div>
+      <h2>AI 工具箱</h2>
+      <p>覆盖文案、作图、视频、办公全场景</p>
+    </div>
+    <div class="toolbox">
+      <div class="tool-item fade-up">
+        <div class="emoji">✍️</div>
+        <h4>文案类</h4>
+        <p>豆包 · ChatGPT · 文心一言 · 讯飞星火 · Gemini</p>
+      </div>
+      <div class="tool-item fade-up">
+        <div class="emoji">🎨</div>
+        <h4>作图类</h4>
+        <p>ChatGPT-image-2 · Nano Banana Pro · 即梦AI · 可灵AI</p>
+      </div>
+      <div class="tool-item fade-up">
+        <div class="emoji">🎬</div>
+        <h4>视频类</h4>
+        <p>Omni Flash · 视频文案一键成片</p>
+      </div>
+      <div class="tool-item fade-up">
+        <div class="emoji">💼</div>
+        <h4>办公类</h4>
+        <p>AI 做表格 · PPT 制作 · 数据整理 · 文案排版</p>
+      </div>
+      <div class="tool-item fade-up">
+        <div class="emoji">🌐</div>
+        <h4>翻译 & 设计</h4>
+        <p>AI 翻译 · AI 思维导图 · AI 修图 · AI 抠图</p>
+      </div>
+      <div class="tool-item fade-up">
+        <div class="emoji">🤖</div>
+        <h4>AI 工具链</h4>
+        <p>WorkBuddy · OpenClaw · Claude · Codex · Trae</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="background: rgba(255,255,255,0.01);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">Education</div>
+      <h2>教育经历</h2>
+    </div>
+    <div class="timeline fade-up">
+      <div class="timeline-item">
+        <div class="date">2023/09 - 2025/06</div>
+        <h3>广东东软学院 · 网络工程（全日制本科）</h3>
+        <div class="school">GPA 3.53 / 4.0</div>
+        <div class="detail">主修：密码学、网络攻防与防范、操作系统原理、路由与交换技术、计算机网络、编程、数据库、云计算等 · 自学 AI</div>
+      </div>
+      <div class="timeline-item">
+        <div class="date">2020/12 - 2023/06</div>
+        <h3>广东理工职业学院 · 计算机网络技术（全日制专科）</h3>
+        <div class="detail">主修：路由器与交换机 · 自学 AI</div>
+      </div>
+      <div class="timeline-item">
+        <div class="date">2018/09 - 2020/12</div>
+        <h3>入伍参军</h3>
+        <div class="detail">中共党员 · 退役军人 · 优秀义务兵 · 嘉奖</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section id="awards">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">Awards</div>
+      <h2>荣誉奖项</h2>
+    </div>
+    <div class="awards-grid fade-up">
+      <div class="award-item">
+        <div class="medal">🥇</div>
+        <div class="info"><h4>华为 ICT 大赛云赛道</h4><p>省一等奖</p></div>
+      </div>
+      <div class="award-item">
+        <div class="medal">🥉</div>
+        <div class="info"><h4>云计算专业技能竞赛</h4><p>省三等奖</p></div>
+      </div>
+      <div class="award-item">
+        <div class="medal">🥈</div>
+        <div class="info"><h4>信息素养大赛</h4><p>二等奖</p></div>
+      </div>
+      <div class="award-item">
+        <div class="medal">🎖️</div>
+        <div class="info"><h4>优秀团干部 · 优秀毕业生</h4><p>一等奖学金多次</p></div>
+      </div>
+      <div class="award-item">
+        <div class="medal">🎖️</div>
+        <div class="info"><h4>优秀义务兵 · 嘉奖</h4><p>服役期间</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="background: rgba(255,255,255,0.01);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">Contact</div>
+      <h2>联系我</h2>
+      <p>随时可以开始工作</p>
+    </div>
+    <div class="contact-grid fade-up">
+      <div class="contact-item">
+        <div class="icon">📧</div>
+        <h4>邮箱</h4>
+        <p>775878365@qq.com</p>
+      </div>
+      <div class="contact-item">
+        <div class="icon">📱</div>
+        <h4>电话</h4>
+        <p>18319869683</p>
+      </div>
+      <div class="contact-item">
+        <div class="icon">📍</div>
+        <h4>地点</h4>
+        <p>广东深圳</p>
+      </div>
+      <div class="contact-item">
+        <div class="icon">🐙</div>
+        <h4>GitHub</h4>
+        <p><a href="https://github.com/qq775878365" target="_blank" style="color:var(--accent);">qq775878365</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>📄 此网页由 <strong>Codex CLI</strong> 自动生成 · 2026</p>
+  <p style="margin-top:6px;">用 AI 构建，为 AI 而生</p>
+</footer>
+
+<!-- SCROLL ANIMATION -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
